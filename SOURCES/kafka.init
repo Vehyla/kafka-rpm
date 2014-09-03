@@ -1,0 +1,52 @@
+# chkconfig: 345 99 01
+# description: Kafka
+#
+# File : Kafka
+#
+# Description: Starts and stops the Kafka server
+#
+
+source /etc/rc.d/init.d/functions
+
+KAFKA_HOME=/opt/kafka
+KAFKA_USER=kafka
+KAFKA_PID=`ps -ef | grep kafka.Kafka | grep -v grep | awk '{print $2}'`
+# See how we were called.
+case "$1" in
+
+  start)
+    echo -n "Starting Kafka:"
+    daemon --user=$KAFKA_USER "$KAFKA_HOME/bin/kafka-server-start.sh $KAFKA_HOME/config/server.properties > /var/log/kafka/kafka.log 2> /var/log/kafka/error.log &"
+    echo
+    ;;
+
+  stop)
+    echo -n "Stopping Kafka: "
+    daemon --user=$KAFKA_USER "kill -SIGINT $KAFKA_PID"
+    echo
+    ;;
+  hardstop)
+    echo -n "Stopping (hard) Kafka: "
+    daemon --user=$KAFKA_USER "kill -9 $KAFKA_PID"
+    echo
+    ;;
+
+  status)
+    if [ "$KAFKA_PID" = "" ] ; then
+      echo "Stopped"
+      exit 3
+    else
+      echo "Running $KAFKA_PID"
+    fi
+    ;;
+
+  restart)
+    $0 stop
+    $0 start
+    ;;
+
+  *)
+    echo "Usage: kafka {start|stop|hardstop|status|restart}"
+    exit 1
+    ;;
+esac
