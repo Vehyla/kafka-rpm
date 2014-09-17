@@ -21,14 +21,25 @@ case "$1" in
     ;;
 
   stop)
-    echo -n "Stopping Kafka: "
-    daemon --user=$KAFKA_USER "kill -SIGINT $KAFKA_PID"
-    echo
+    if [ "$KAFKA_PID" = "" ] ; then
+      echo "Stopped"
+      exit 3
+    else
+      echo -n "Stopping Kafka: "
+      daemon --user=$KAFKA_USER "kill -SIGINT $KAFKA_PID"
+      echo
+    fi
     ;;
+
   hardstop)
-    echo -n "Stopping (hard) Kafka: "
-    daemon --user=$KAFKA_USER "kill -9 $KAFKA_PID"
-    echo
+    if [ "$KAFKA_PID" = "" ] ; then
+      echo "Stopped"
+      exit 3
+    else
+      echo -n "Stopping (hard) Kafka: "
+      daemon --user=$KAFKA_USER "kill -9 $KAFKA_PID"
+      echo
+    fi
     ;;
 
   status)
@@ -49,4 +60,5 @@ case "$1" in
     echo "Usage: kafka {start|stop|hardstop|status|restart}"
     exit 1
     ;;
+
 esac
