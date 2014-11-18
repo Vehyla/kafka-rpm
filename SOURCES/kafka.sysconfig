@@ -1,0 +1,11 @@
+fka home directory
+#KAFKA_HOME=/opt/kafka
+
+# Kafka user
+#KAFKA_USER=kafka
+
+# Location of the kafka configuration file
+#KAFKA_CONF="/opt/kafka/config/server.properties"
+
+# Default logging directory
+#KAFKA_LOG_DIR="/var/log/kafka"

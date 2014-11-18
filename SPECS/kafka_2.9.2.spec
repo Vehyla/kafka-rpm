@@ -8,6 +8,7 @@ License: Apache (v2)
 Group: Applications
 Source0: %{name}-%{version}.tgz
 Source1: kafka.init
+Source2: kafka.sysconfig
 URL: http://kafka.apache.org
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 Packager: charlie.wyse@am.sony.com
@@ -24,9 +25,11 @@ Kafka is a distributed, partitioned, replicated commit log service. It provides 
 %install
 rm -rf %{buildroot}/*
 mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
+mkdir -p $RPM_BUILD_ROOT/etc/sysconfig
 mkdir -p $RPM_BUILD_ROOT/opt/kafka/logs
 mkdir -p $RPM_BUILD_ROOT/var/log/kafka
 install -m 755 %{S:1} $RPM_BUILD_ROOT/etc/rc.d/init.d/kafka
+install -m 755 %{S:2} $RPM_BUILD_ROOT/etc/sysconfig/kafka
 cp -pr * $RPM_BUILD_ROOT/opt/kafka
 
 %files
@@ -35,6 +38,7 @@ cp -pr * $RPM_BUILD_ROOT/opt/kafka
 %attr(755, kafka, kafka) /var/log/kafka
 %attr(755, root, root) /etc/rc.d/init.d/kafka
 %config(noreplace) /opt/kafka/config
+%config(noreplace) /etc/sysconfig/kafka
 %doc /opt/kafka/LICENSE
 %doc /opt/kafka/NOTICE
 /opt/kafka/libs
@@ -64,6 +68,8 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Tue Nov 18 2014 Charlie Wyse <charlie.wyse@am.sony.com>
+- Added support for /etc/sysconfig and changed kill signal in init script
 * Wed Aug 20 2014 Charlie Wyse <charlie.wyse@am.sony.com>
 - Update to Kafka 0.8.1.1 with scala 2.9.2 binary build.
 * Wed Apr 9 2014 Edward Capriolo <edlinuxguru@gmail.com>

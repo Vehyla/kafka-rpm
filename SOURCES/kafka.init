@@ -8,38 +8,36 @@
 
 source /etc/rc.d/init.d/functions
 
-KAFKA_HOME=/opt/kafka
-KAFKA_USER=kafka
+KAFKA_HOME='/opt/kafka'
+KAFKA_USER='kafka'
+KAFKA_LOG='/var/log/kafka'
+KAFKA_CONF='/opt/kafka/config/server.properties'
+
+if [ -f /etc/sysconfig/kafka ]; then
+  . /etc/sysconfig/kafka
+fi
+
+# Gather our current PID number
 KAFKA_PID=`ps -ef | grep kafka.Kafka | grep -v grep | awk '{print $2}'`
-# See how we were called.
+
 case "$1" in
 
   start)
     echo -n "Starting Kafka:"
-    daemon --user=$KAFKA_USER "$KAFKA_HOME/bin/kafka-server-start.sh $KAFKA_HOME/config/server.properties > /var/log/kafka/kafka.log 2> /var/log/kafka/error.log &"
+    daemon --user=$KAFKA_USER "$KAFKA_HOME/bin/kafka-server-start.sh $KAFKA_CONF > $KAFKA_LOG/kafka.log 2> $KAFKA_LOG/error.log &"
     echo
     ;;
 
   stop)
-    if [ "$KAFKA_PID" = "" ] ; then
-      echo "Stopped"
-      exit 3
-    else
-      echo -n "Stopping Kafka: "
-      daemon --user=$KAFKA_USER "kill -SIGINT $KAFKA_PID"
-      echo
-    fi
+    echo -n "Stopping Kafka: "
+    daemon --user=$KAFKA_USER "kill -HUP $KAFKA_PID"
+    echo
     ;;
 
   hardstop)
-    if [ "$KAFKA_PID" = "" ] ; then
-      echo "Stopped"
-      exit 3
-    else
-      echo -n "Stopping (hard) Kafka: "
-      daemon --user=$KAFKA_USER "kill -9 $KAFKA_PID"
-      echo
-    fi
+    echo -n "Stopping (hard) Kafka: "
+    daemon --user=$KAFKA_USER "kill -KILL $KAFKA_PID"
+    echo
     ;;
 
   status)
@@ -52,13 +50,11 @@ case "$1" in
     ;;
 
   restart)
-    $0 stop
-    $0 start
+    $0 stop && $0 start
     ;;
 
   *)
     echo "Usage: kafka {start|stop|hardstop|status|restart}"
     exit 1
     ;;
-
 esac
