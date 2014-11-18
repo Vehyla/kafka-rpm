@@ -48,7 +48,7 @@ cp -pr * $RPM_BUILD_ROOT/opt/kafka
 rm -rf $RPM_BUILD_ROOT
 
 %pre
-getent passwd kafka || useradd -M -s /sbin/nologin -c "Franz Kafka" -u 1883 kafka > /dev/null
+getent passwd kafka || useradd -M -s /sbin/nologin -c "Franz Kafka" -d /opt/kafka -u 1883 kafka > /dev/null
 
 %post
 chkconfig --add kafka
