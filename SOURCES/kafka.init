@@ -23,6 +23,10 @@ KAFKA_PID=`ps -ef | grep kafka.Kafka | grep -v grep | awk '{print $2}'`
 case "$1" in
 
   start)
+    if [ "$KAFKA_PID" != "" ]; then 
+      echo "Kafka is already running (pid $KAFKA_PID)"
+      exit 1
+    fi
     echo -n "Starting Kafka:"
     daemon --user=$KAFKA_USER "$KAFKA_HOME/bin/kafka-server-start.sh $KAFKA_CONF > $KAFKA_LOG/kafka.log 2> $KAFKA_LOG/error.log &"
     echo
