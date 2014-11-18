@@ -3,7 +3,7 @@
 Summary: Kafka and distributed topic based producer consumer queue
 Name: kafka_2.9.2
 Version: 0.8.1.1
-Release: 0
+Release: 1
 License: Apache (v2)
 Group: Applications
 Source0: %{name}-%{version}.tgz
