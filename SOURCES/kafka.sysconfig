@@ -1,4 +1,4 @@
-fka home directory
+# Kafka home directory
 #KAFKA_HOME=/opt/kafka
 
 # Kafka user
